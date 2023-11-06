@@ -18,7 +18,7 @@ public final class AutoSaverPlugin extends JavaPlugin implements Listener {
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             System.out.println("[AutoSaverPlugin] Autosave triggered. Saving world.");
             Bukkit.dispatchCommand(console,"save-all");
-        },6500,6500);
+        },6550,6550);
         System.out.println("[AutoSaverPlugin] Plugin started and will save game every 5 minutes and when a player disconnects.");
     }
 
