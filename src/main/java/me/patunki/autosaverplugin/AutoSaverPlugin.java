@@ -4,14 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public final class AutoSaverPlugin extends JavaPlugin implements Listener {
 
@@ -20,33 +15,24 @@ public final class AutoSaverPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(this,this);
-        final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(saveRunnable,1,1, TimeUnit.MINUTES);
-
-
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            System.out.println("[AutoSaverPlugin] Autosave triggered. Saving world.");
+            Bukkit.dispatchCommand(console,"save-all");
+        },6500,6500);
+        System.out.println("[AutoSaverPlugin] Plugin started and will save game every 5 minutes and when a player disconnects.");
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
 
-        System.out.println("[AutoSaverPlugin] Player " + event.getPlayer().getName() + "disconnected. Saving world.");
-        Bukkit.dispatchCommand(console,"save-all");
-
-
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
-
-    Runnable saveRunnable = new Runnable() {
-        public void run() {
-            System.out.println("[AutoSaverPlugin] Timed autosave triggered. Saving world.");
+       int players = getServer().getOnlinePlayers().size();
+        if (players <= 1) {
+            System.out.println("[AutoSaverPlugin] Player " + event.getPlayer().getName() + " is the last player to disconnect. Saving world.");
             Bukkit.dispatchCommand(console,"save-all");
-
         }
-    };
+
+    }
+
 }
 
 
